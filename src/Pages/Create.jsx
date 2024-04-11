@@ -3,6 +3,9 @@ import { toast } from 'react-toastify'
 import UserApi from '../API/UserApi'
 import { useNavigate } from 'react-router-dom'
 
+import { createUsers } from '../Actions/UserAction'
+import { useDispatch } from 'react-redux'
+
 function Create() {
     const [user,setUser] = useState({
         name: "",
@@ -20,14 +23,14 @@ function Create() {
     const submitHandler = async (e) => {
         e.preventDefault()
         try {
-            console.log(`new user =`, user)
-            await UserApi.createUser(user)
-                .then(res => {
-                    toast.success(res.data.msg)
+            // console.log(`new user =`, user)
+            // calling action method using dispatch function
+            await dispatchEvent(createUsers(user))
+                 .unwrap()
+                 .then(res => {
+                    toast.success(res.msg)
                     navigate(`/`)
-                }).catch(err => {
-                    toast.error(err.response.data.msg)
-                })
+                 }).catch(err => toast.error(err.msg))
         } catch (err) {
             toast.error(err.message)
         }
