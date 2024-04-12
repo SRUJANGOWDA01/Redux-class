@@ -19,7 +19,13 @@ const userSlice = createSlice({
                     return [...action.payload]
                 })
                 .addCase(retriveSingleUser.fulfilled, (state,action) => {})
-                .addCase(updateUser.fulfilled, (state,action) => {})
+                .addCase(updateUser.fulfilled, (state,action) => {
+                    let userIndex = state.findIndex(item => item._id === action.payload.id)
+                    state[userIndex] = {
+                        ...state[userIndex],
+                        ...action.payload
+                    }
+                })
                 .addCase(deleteUser.fulfilled, (state,action) => {
                     let userIndex = state.findIndex(item => item._id === action.payload.id)
                     state.splice(userIndex,1)

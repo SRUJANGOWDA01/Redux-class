@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import UserApi from '../API/UserApi'
-import { useParams,useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+
+import { useDispatch } from 'react-redux'
+import { updateUser } from '../Actions/UserAction'
 
 function Update() {
     const [user,setUser] = useState({
@@ -11,14 +14,16 @@ function Update() {
     })
     const navigate = useNavigate()
     const params = useParams()
+    const dispatch = useDispatch() // action dispatcher
 
-    // read single user data
+
+    //read single user data
     const readData = async () => {
         await UserApi.readSingle(params.id)
-           .then(res => {
-            console.log(`single user=`, res.data)
-            setUser(res.data.user)
-           }).catch(err => toast.error(err.response.data.msg))
+            .then(res => {
+                console.log(`single user =`, res.data)
+                setUser(res.data.user)
+            }).catch(err => toast.error(err.response.data.msg))
     }
 
     useEffect(() => {
@@ -26,21 +31,21 @@ function Update() {
     },[])
 
     const readInput = (e) => {
-        const {name, value}= e.target
+        const {name, value} = e.target
         setUser({...user, [name]:value })
     }
+
 
     const submitHandler = async (e) => {
         e.preventDefault()
         try {
-            console.log(`new user =`, user)
-            await UserApi.updateUser(user,params.id)
-                .then(res => {
-                    toast.success(res.data.msg)
-                    navigate(`/`)
-                }).catch(err => {
-                    toast.error(err.response.data.msg)
-                })
+           console.log(`update =`, user)
+           await dispatch(updateUser({user,id: params.id}))
+           .unwrap()
+           .then(res => {
+             toast.success(res.msg)
+             navigate(`/`)
+           }).catch(err => toast.error(err.message))
         } catch (err) {
             toast.error(err.message)
         }
@@ -48,14 +53,14 @@ function Update() {
 
   return (
     <div className="container">
-       <div className="row">
-          <div className="col-md-12 text-center">
-              <h3 className="display-3 text-center"> Update User</h3>
-              <p className="text-dark"> { params.id } </p>
-          </div>
-       </div>
-         
-       <div className="row"> 
+        <div className="row">
+            <div className="col-md-12 text-center">
+                <h3 className="display-3 text-success">Update User</h3>
+                <p className="text-dark"> { params.id } </p>
+            </div>
+        </div>
+
+        <div className="row">
             <div className="col-md-6 offset-md-3">
                 <div className="card">
                     <div className="card-body">
@@ -79,7 +84,7 @@ function Update() {
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
   )
 }

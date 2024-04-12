@@ -14,6 +14,7 @@ function Create() {
     })
 
     const navigate = useNavigate()
+    const dispatch = useDispatch() // action dispatcher
 
     const readInput = (e) => {
         const {name, value} = e.target
@@ -25,12 +26,12 @@ function Create() {
         try {
             // console.log(`new user =`, user)
             // calling action method using dispatch function
-            await dispatchEvent(createUsers(user))
+            await dispatch(createUsers(user))
                  .unwrap()
                  .then(res => {
                     toast.success(res.msg)
                     navigate(`/`)
-                 }).catch(err => toast.error(err.msg))
+                 }).catch(err => toast.error(err.response.data.msg))
         } catch (err) {
             toast.error(err.message)
         }

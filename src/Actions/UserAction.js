@@ -12,7 +12,7 @@ export const createUsers = createAsyncThunk("user/create", async (user) => {
 // read all users
 export const retriveUsers = createAsyncThunk("user/read", async () => {
     const res = await UserApi.readAll()
-    console.log(`reducer res =`, res.data)
+    // console.log(`reducer res =`, res.data)
     return res.data.users
 })
 // read single action
@@ -21,7 +21,8 @@ export const retriveSingleUser = createAsyncThunk("user/read/single", async ({id
 })
 // update action
 export const updateUser = createAsyncThunk("user/update", async ({id,user}) => {
-    
+    let res = await UserApi.updateUser(user,id)
+    return res.data
 })
 // delete action 
 export const deleteUser = createAsyncThunk("user/delete", async (id) => {
